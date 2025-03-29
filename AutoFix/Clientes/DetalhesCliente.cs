@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace AutoFix.Clientes
 {
-    public partial class ConsultarCliente : Form
+    public partial class DetalhesCliente : Form
     {
-        public ConsultarCliente()
+        public DetalhesCliente(Cliente? clienteSelecionado)
         {
             InitializeComponent();
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
     }
 }

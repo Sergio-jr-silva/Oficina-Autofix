@@ -11,13 +11,22 @@ namespace AutoFix
 
         private void label4_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            using (var CadastrarClientes = new CadastroClientes()) { 
-                    CadastrarClientes.ShowDialog();
+            using (var CadastrarClientes = new CadastroClientes())
+            {
+                CadastrarClientes.ShowDialog();
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            using (var ConsultaCliente = new ConsultaClientes())
+            {
+                ConsultaCliente.ShowDialog();
             }
         }
     }
