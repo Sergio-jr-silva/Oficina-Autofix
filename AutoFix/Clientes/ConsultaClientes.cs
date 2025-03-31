@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace AutoFix.Clientes
 {
@@ -13,7 +15,7 @@ namespace AutoFix.Clientes
         {
             InitializeComponent();
             CriarCabecalho();
-            CarregarClientes();
+            CarregarClientesDoBanco();
         }
 
         private void CriarCabecalho()
@@ -66,16 +68,43 @@ namespace AutoFix.Clientes
             flowLayoutPanelClientes.Controls.Add(panelCabecalho);
         }
 
-        private void CarregarClientes()
+        private void CarregarClientesDoBanco()
         {
-            clientes = new List<Cliente>
-            {
-                new Cliente { Id = 1, Nome = "João Silva", Email = "joao@email.com", Telefone = "9999-9999", Data = "11/12/2022" },
-                new Cliente { Id = 2, Nome = "Maria Oliveira", Email = "maria@email.com", Telefone = "9888-8888", Data = "10/03/2021" },
-                new Cliente { Id = 3, Nome = "Carlos Souza", Email = "carlos@email.com", Telefone = "9777-7777", Data = "12/02/2002" }
-            };
+            clientes = new List<Cliente>();
+            string connectionString = "server=localhost;database=autofix;uid=root;pwd=3477;";
 
-            AtualizarLista(clientes);
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT id, nome, email, telefone, data_cadastro FROM clientes";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                clientes.Add(new Cliente
+                                {
+                                    Id = reader.GetInt32("id"),
+                                    Nome = reader.GetString("nome"),
+                                    Email = reader.GetString("email"),
+                                    Telefone = reader.GetString("telefone"),
+                                    Data = reader.GetDateTime("data_cadastro").ToString("dd/MM/yyyy")
+                                });
+                            }
+                        }
+                    }
+
+                    AtualizarLista(clientes);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao carregar clientes: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void AtualizarLista(List<Cliente> lista)
